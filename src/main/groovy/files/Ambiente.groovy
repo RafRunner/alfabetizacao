@@ -37,6 +37,18 @@ class Ambiente {
         return fullPath
     }
 
+    File getFile(String nomeArquivo, String nomePasta = null) {
+        String fullPath
+        fullPath = rootDirectory
+
+        if (nomePasta) {
+            fullPath += separadorEndereco + nomePasta
+        }
+        fullPath += separadorEndereco + nomeArquivo
+
+        return new File(fullPath)
+    }
+
     List<File> getFiles(String nomePasta) {
         File pasta
         try {
