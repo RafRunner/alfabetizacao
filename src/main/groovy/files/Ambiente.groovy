@@ -57,7 +57,7 @@ class Ambiente {
             throw new EntradaInvalidaException('Essa pasta não existe!')
         }
 
-        return pasta.listFiles().findAll { File arquivo -> arquivo.isFile() }
+        return (List<File>) pasta.listFiles().findAll { File arquivo -> arquivo.isFile() }
     }
 
 }

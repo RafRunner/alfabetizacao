@@ -5,10 +5,10 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class EntradaInvalidaException extends Exception {
 
-    String duplicataMensagem
+    String mensagem
 
     EntradaInvalidaException(String mensagem) {
         super(mensagem)
-        duplicataMensagem = mensagem
+        this.mensagem = mensagem
     }
 }
