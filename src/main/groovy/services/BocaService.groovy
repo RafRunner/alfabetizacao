@@ -11,7 +11,10 @@ class BocaService {
     }
 
     static getInstancia() {
-        return instancia ?: new BocaService()
+        if (!instancia) {
+            instancia = new BocaService()
+        }
+        return instancia
     }
 
     private static final String nomePastaBocas = 'bocas'

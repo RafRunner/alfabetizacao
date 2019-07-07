@@ -2,10 +2,7 @@ package files
 
 import excecoes.EntradaInvalidaException
 import groovy.transform.CompileStatic
-
-import javax.imageio.ImageIO
-import java.awt.Graphics2D
-import java.awt.image.BufferedImage
+import javafx.scene.image.Image
 
 @CompileStatic
 class MyImage {
@@ -15,31 +12,23 @@ class MyImage {
     private Ambiente ambiente = Ambiente.instancia
 
     String titulo
-    BufferedImage bufferedImage
+    Image image
     String caminhoImagem
 
-    MyImage(String pastaImagem, String titulo) {
+    MyImage(final String pastaImagem, final String titulo, final Boolean ehFundo) {
         String caminho = ambiente.getFullPath(pastaImagem, titulo + EXTENSAO_PADRAO)
 
         try {
-            File arquivo = new File(caminho)
-
-            this.bufferedImage = ImageIO.read(arquivo)
+            this.image = new Image(new File(caminho).toURI().toURL().toString(), ehFundo)
             this.titulo = titulo
             this.caminhoImagem = caminho
 
-        } catch (IOException ignored) {
-            throw new EntradaInvalidaException('Arquivo de imagem não existe, não pôde ser lido ou não é uma imagem! :' + caminho)
+        } catch (Exception ignored) {
+            throw new EntradaInvalidaException('Arquivo de imagem não existe, não pôde ser lido ou não é uma imagem: ' + caminho + '!')
         }
     }
 
-    void resize(int scaledWidth, int scaledHeight) throws IOException {
-        BufferedImage outputImage = new BufferedImage(scaledWidth, scaledHeight, bufferedImage.getType())
-
-        Graphics2D g2d = outputImage.createGraphics()
-        g2d.drawImage(bufferedImage, 0, 0, scaledWidth, scaledHeight, null)
-        g2d.dispose()
-
-        bufferedImage = outputImage
+    MyImage(final String pastaImagem, final String titulo) {
+        this(pastaImagem, titulo, false)
     }
 }

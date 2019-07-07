@@ -24,7 +24,7 @@ class Ambiente {
         sistemaOperacional = System.getProperty('os.name')
         separadorEndereco = System.getProperty('file.separator')
 
-        rootDirectory += 'main' + separadorEndereco + 'resources'
+        rootDirectory += separadorEndereco + 'src' + separadorEndereco + 'main' + separadorEndereco + 'resources'
     }
 
     String getFullPath(String nomePasta, String nomeArquivo = null) {

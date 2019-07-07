@@ -16,7 +16,10 @@ class SilabaService {
     }
 
     static SilabaService getInstancia() {
-        return instancia ?: new SilabaService()
+        if (!instancia) {
+            instancia = new SilabaService()
+        }
+        return instancia
     }
 
     private static final String nomePastaSilabas = 'silabas'

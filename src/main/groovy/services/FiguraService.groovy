@@ -11,7 +11,10 @@ class FiguraService {
     }
 
     static getInstancia() {
-        return instancia ?: new FiguraService()
+        if (!instancia) {
+            instancia = new FiguraService()
+        }
+        return instancia
     }
 
     private static final String nomePastaFiguras = 'figuras'
