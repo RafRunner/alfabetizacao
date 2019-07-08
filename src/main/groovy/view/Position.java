@@ -1,6 +1,6 @@
 package view;
 
-public class Position {
+public class Position implements Comparable<Position> {
 
     private double x;
     private double y;
@@ -29,5 +29,13 @@ public class Position {
     @Override
     public String toString() {
         return "X: " + x + " Y: " + y;
+    }
+
+    @Override
+    public int compareTo(Position o) {
+        final Double distanciaRadiana = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        final Double outraDistanciaRadiana = Math.sqrt(Math.pow(o.getX(), 2) + Math.pow(o.getY(), 2));
+
+        return distanciaRadiana.compareTo(outraDistanciaRadiana);
     }
 }

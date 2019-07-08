@@ -70,6 +70,12 @@ public class Nature implements EventHandler<MouseEvent> {
         deslocate(relativeDistance.getX(), relativeDistance.getY());
     }
 
+    public void deslocate(final Position position) {
+        final double deltaX = position.getX() - lastX;
+        final double deltaY = position.getY() - lastY;
+        deslocate(deltaX, deltaY);
+    }
+
     private void deslocate(final double deltaX, final double deltaY) {
         for (final Region dragNode : this.dragRegions) {
             final double initialTranslateX = dragNode.getTranslateX();
@@ -151,6 +157,10 @@ public class Nature implements EventHandler<MouseEvent> {
     public void setStartingPosition(final double x, final double y) {
         this.lastX = x;
         this.lastY = y;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public void enable() {

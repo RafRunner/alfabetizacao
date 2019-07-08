@@ -1,5 +1,7 @@
 package view;
 
+import controllers.FundoController;
+import dominio.Fundo;
 import factories.FundoFactory;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -42,7 +44,11 @@ public class JanelaPrincipal extends Application {
 
         VBox vBox = new VBox();
         Button start = new Button("Começar!");
-        start.setOnAction(event -> mudarSceneAtual(FundoFactory.getInstancia().constroiFundo("QU").getScene()));
+        start.setOnAction(event -> {
+            Fundo fundo = FundoFactory.getInstancia().constroiFundo("D");
+            mudarSceneAtual(fundo.getScene());
+            FundoController.getInstancia().configuraListeners(fundo);
+        });
 
         vBox.setAlignment(Pos.CENTER);
         vBox.getChildren().addAll(start);

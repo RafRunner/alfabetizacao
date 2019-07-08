@@ -10,7 +10,7 @@ class FiguraService {
         silabaService = SilabaService.instancia
     }
 
-    static getInstancia() {
+    static FiguraService getInstancia() {
         if (!instancia) {
             instancia = new FiguraService()
         }

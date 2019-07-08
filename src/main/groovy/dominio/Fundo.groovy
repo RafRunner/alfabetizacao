@@ -2,6 +2,7 @@ package dominio
 
 import groovy.transform.CompileStatic
 import javafx.scene.Scene
+import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.GridPane
 import view.draggable.Nature
 
@@ -16,6 +17,8 @@ class Fundo {
     GridPane painelPai
     GridPane painelImagem
     GridPane painelFiguras
+
+    AnchorPane anchorPaneDireitoEspacamento
 
     Map<String, Nature> vogalToLocalSilaba = [:]
     Map<String, Nature> vogalToLocalFigura = [:]

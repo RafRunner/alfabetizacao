@@ -81,6 +81,7 @@ class FundoFactory {
 
         painelFiguras.setPadding(new Insets(30, 30, 30, 30))
         painelFiguras.setHgap(50)
+        configuraFiguras(fundo)
 
         GridPane.setConstraints(painelImagem, 0, 0)
         GridPane.setConstraints(painelFiguras, 0, 1)
@@ -97,16 +98,14 @@ class FundoFactory {
         final String consoante = fundo.consoante
 
         painelImagem.setAlignment(Pos.CENTER)
-//        painelImagem.setStyle("-fx-background-color: #000000;")
         painelImagem.columnConstraints.add(new ColumnConstraints(tamanhoTela.width / 2))
         painelImagem.columnConstraints.add(new ColumnConstraints(tamanhoTela.width / 2))
 
         final AnchorPane anchorPaneDireito = new AnchorPane()
+        fundo.anchorPaneDireitoEspacamento = anchorPaneDireito
         final AnchorPane anchorPaneEsquerdo = new AnchorPane()
         anchorPaneDireito.setMinHeight(tamanhoTela.height - alturaGavetaFiguras)
-//        anchorPaneDireito.setStyle("-fx-background-color: #AAAAAA;")
         anchorPaneEsquerdo.setMinHeight(tamanhoTela.height - alturaGavetaFiguras)
-//        anchorPaneEsquerdo.setStyle("-fx-background-color: #666666;")
 
         GridPane.setConstraints(anchorPaneDireito, 0, 0)
         GridPane.setConstraints(anchorPaneEsquerdo, 1, 0)
@@ -126,26 +125,24 @@ class FundoFactory {
         for (int i = 0; i < silabaService.getNumeroSilabasAssociadasAConsoante(consoante); i++) {
             final Pane paneLugarSilaba = new Pane()
             paneLugarSilaba.setMinSize(100, 100)
-            paneLugarSilaba.setStyle("-fx-background-color: #AAAAAA;")
 
             final Pane paneLugarFigura = new Pane()
             paneLugarFigura.setMinSize(100, 100)
-            paneLugarFigura.setStyle("-fx-background-color: #666666;")
 
             final Nature natureSilaba = new Nature(paneLugarSilaba)
-//            natureSilaba.disable()
+            natureSilaba.disable()
             final Nature natureFigura = new Nature(paneLugarFigura)
-//            natureFigura.disable()
+            natureFigura.disable()
 
             final String vogalIndice = vogalService.getVogalParaIndice(consoante, i)
 
             fundo.vogalToLocalSilaba.put(vogalIndice, natureSilaba)
             fundo.vogalToLocalFigura.put(vogalIndice, natureFigura)
 
-            AnchorPane.setTopAnchor(paneLugarSilaba, 90 + 150 * i)
-            AnchorPane.setLeftAnchor(paneLugarSilaba, 220)
-            AnchorPane.setTopAnchor(paneLugarFigura, 90 + 150 * i)
-            AnchorPane.setLeftAnchor(paneLugarFigura, 525)
+            AnchorPane.setTopAnchor(paneLugarSilaba, 90 + 147 * i)
+            AnchorPane.setLeftAnchor(paneLugarSilaba, 200)
+            AnchorPane.setTopAnchor(paneLugarFigura, 90 + 147 * i)
+            AnchorPane.setLeftAnchor(paneLugarFigura, 500)
             anchorPaneEsquerdo.children.addAll(paneLugarSilaba, paneLugarFigura)
         }
 
@@ -154,15 +151,48 @@ class FundoFactory {
 
     private void configuraFiguras(final Fundo fundo) {
         final String consoante = fundo.consoante
+        int contador = 0
 
-        final List<Label> silabas = silabaService.getSilabasAssociadasAConsoante(consoante).collect {
+        silabaService.getSilabasAssociadasAConsoante(consoante).each {
+            final Pane paneSilaba = new Pane()
+            paneSilaba.setMinSize(170, 110)
+
             Label label = new Label(it)
-            label.font = new Font('Arial',100)
-            label
+            int size = consoante.length() > 1 ? 70 : 100
+            label.font = new Font('Arial',size)
+
+            paneSilaba.children.add(label)
+            final Nature natureSilaba = new Nature(paneSilaba)
+            fundo.vogalToSilaba.put(vogalService.getVogalParaIndice(consoante, contador), natureSilaba)
+            contador++
         }
 
-        final List<ImageView> figuras = figuraService.getFigurasPorConsoante(consoante).collect {
-            new ImageView(it.image)
+        contador = 0
+
+        figuraService.getFigurasPorConsoante(consoante).each {
+            final Pane paneFigura = new Pane()
+            paneFigura.setMinSize(170, 110)
+
+            final ImageView figura = new ImageView(it.image)
+
+            paneFigura.children.add(figura)
+            final Nature natureFigura = new Nature(paneFigura)
+            fundo.vogalToFigura.put(vogalService.getVogalParaIndice(consoante, contador), natureFigura)
+            contador++
+        }
+
+        colocaSilabasOuFigurasNaTela(fundo.painelFiguras, fundo.vogalToSilaba)
+    }
+
+    void colocaSilabasOuFigurasNaTela(final GridPane painelFiguras, final Map<String, Nature> silabasOuFiguras) {
+        final List<Nature> silabasOuFigurasList = silabasOuFiguras.values() as List<Nature>
+        silabasOuFigurasList.sort { Math.random() }
+
+        for (int i = 0; i <  silabasOuFigurasList.size(); i++) {
+            final Pane silabaOuFigura = (Pane) silabasOuFigurasList[i].getEventRegion()
+
+            GridPane.setConstraints(silabaOuFigura, i, 0)
+            painelFiguras.children.add(silabaOuFigura)
         }
     }
 }
