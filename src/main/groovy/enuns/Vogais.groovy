@@ -1,8 +1,5 @@
 package enuns
 
-import groovy.transform.CompileStatic
-
-@CompileStatic
 enum Vogais {
 
     A('A'),
@@ -21,7 +18,7 @@ enum Vogais {
         return letra in valores()
     }
 
-    static List<String> valores() {
+    static ArrayList<String> valores() {
         return Arrays.asList(values()).stringEquivalente
     }
 }

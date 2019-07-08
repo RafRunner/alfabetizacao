@@ -19,9 +19,9 @@ class MyImage {
         String caminho = ambiente.getFullPath(pastaImagem, titulo + EXTENSAO_PADRAO)
 
         try {
-            this.image = new Image(new File(caminho).toURI().toURL().toString(), ehFundo)
+            this.caminhoImagem = new File(caminho).toURI().toURL().toString()
+            this.image = new Image(caminhoImagem, ehFundo)
             this.titulo = titulo
-            this.caminhoImagem = caminho
 
         } catch (Exception ignored) {
             throw new EntradaInvalidaException('Arquivo de imagem não existe, não pôde ser lido ou não é uma imagem: ' + caminho + '!')
@@ -30,5 +30,10 @@ class MyImage {
 
     MyImage(final String pastaImagem, final String titulo) {
         this(pastaImagem, titulo, false)
+    }
+
+    void resize(final double width, final double height, final boolean preserveRatio = false) {
+        final Image imagemResized = new Image(caminhoImagem, width, height, preserveRatio, true)
+        this.image = imagemResized
     }
 }

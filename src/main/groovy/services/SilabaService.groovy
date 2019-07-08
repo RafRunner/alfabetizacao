@@ -26,7 +26,7 @@ class SilabaService {
 
     private Ambiente ambiente
 
-    List<String> getSilabasAssociadasAConsoante(String consoante) {
+    List<String> getSilabasAssociadasAConsoante(final String consoante) {
         if (Vogais.ehVogal(consoante)) {
             return []
         }
@@ -35,7 +35,15 @@ class SilabaService {
         return vogais.collect { String vogal -> consoante + vogal }
     }
 
-    List<MyImage> getImagensSilabasAssociadasAConsoante(String consoante) {
+    List<MyImage> getImagensSilabasAssociadasAConsoante(final String consoante) {
         return getSilabasAssociadasAConsoante(consoante).collect { String silaba -> new MyImage(nomePastaSilabas, silaba) }
+    }
+
+    Integer getNumeroSilabasAssociadasAConsoante(final String consoante) {
+        final CasosEspeciais casoEspecial = CasosEspeciais.getCasoEspecial(consoante)
+        if (casoEspecial) {
+            return casoEspecial.vogaisUsadas.size()
+        }
+        return Vogais.valores().size()
     }
 }

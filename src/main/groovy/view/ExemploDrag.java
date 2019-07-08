@@ -9,6 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
+import view.draggable.Event;
+import view.draggable.Nature;
 
 public class ExemploDrag extends Application {
 
@@ -44,8 +46,8 @@ public class ExemploDrag extends Application {
         pane2.getChildren().addAll(shape2);
         pane2.setMaxWidth(50);
 
-        Draggable.Nature nature1 = new Draggable.Nature(pane1);
-        Draggable.Nature nature2 = new Draggable.Nature(pane2);
+        Nature nature1 = new Nature(pane1);
+        Nature nature2 = new Nature(pane2);
 
         nature1.addListener((draggableNature, dragEvent) -> handle(nature1, nature2, dragEvent));
 
@@ -64,8 +66,8 @@ public class ExemploDrag extends Application {
         nature2.setStartingPosition(pane2.getLayoutX(), pane2.getLayoutY());
     }
 
-    private void handle(Draggable.Nature nature1, Draggable.Nature nature2, Draggable.Event dragEvent) {
-        if (dragEvent.equals(Draggable.Event.DragEnd)) {
+    private void handle(Nature nature1, Nature nature2, Event dragEvent) {
+        if (dragEvent.equals(Event.DragEnd)) {
             System.out.println(nature1.isTouching(nature2));
             System.out.println("Position of 1: " + nature1.getPosition());
             System.out.println("Position of 2: " + nature2.getPosition());
@@ -80,7 +82,7 @@ public class ExemploDrag extends Application {
                 nature1.disable();
                 nature2.disable();
             }
-        } else if (dragEvent.equals(Draggable.Event.Press)) {
+        } else if (dragEvent.equals(Event.Press)) {
             System.out.println("Clicou" + "\n");
         }
     }

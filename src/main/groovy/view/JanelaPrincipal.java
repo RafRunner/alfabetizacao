@@ -1,6 +1,6 @@
 package view;
 
-import excecoes.EntradaInvalidaException;
+import factories.FundoFactory;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,37 +8,32 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import services.FundoService;
+import utils.StringUtils;
 
 public class JanelaPrincipal extends Application {
 
     private Stage stage;
     private Scene sceneAtual;
 
-    private FundoService fundoService = FundoService.getInstancia();
-
     public JanelaPrincipal() {
     }
 
     public static void main(String[] args) {
         launch(args);
-
-        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            String mensagemErro = "";
-//            StringUtils.regexFind(e.toString(), "(?<=.EntradaInvalidaException: ).+!");
-
-            try {
-                mensagemErro = ((EntradaInvalidaException) e).getMensagem();
-            } catch (Exception ignored) {}
-
-             if (mensagemErro.equals("")) {
-                mensagemErro = e.toString();
-            }
-            OptionPane.alerta("Erro!", mensagemErro);
-        });
     }
 
     @Override
     public void start(Stage primaryStage) {
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            String mensagemErro = StringUtils.regexFind(e.toString(), "(?<=.EntradaInvalidaException: ).+!?");
+
+            if (mensagemErro == null) {
+                mensagemErro = e.toString();
+            }
+            e.printStackTrace();
+            OptionPane.alerta("Erro!", mensagemErro);
+        });
+
         stage = primaryStage;
         stage.setOnCloseRequest(e -> {
             e.consume();
@@ -47,7 +42,7 @@ public class JanelaPrincipal extends Application {
 
         VBox vBox = new VBox();
         Button start = new Button("Começar!");
-        start.setOnAction(event -> mudarSceneAtual(fundoService.constroiFundo("QU")));
+        start.setOnAction(event -> mudarSceneAtual(FundoFactory.getInstancia().constroiFundo("QU").getScene()));
 
         vBox.setAlignment(Pos.CENTER);
         vBox.getChildren().addAll(start);

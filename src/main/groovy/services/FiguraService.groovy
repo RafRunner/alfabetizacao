@@ -21,8 +21,12 @@ class FiguraService {
 
     private SilabaService silabaService
 
-    List<MyImage> getBocasPorConsoante(String consoante) {
+    List<MyImage> getFigurasPorConsoante(String consoante) {
         List<String> silabas = silabaService.getSilabasAssociadasAConsoante(consoante)
-        return silabas.collect { String silaba -> new MyImage(nomePastaFiguras, silaba) }
+        return silabas.collect { String silaba ->
+            MyImage myImage = new MyImage(nomePastaFiguras, silaba)
+            myImage.resize(170, 110)
+            myImage
+        }
     }
 }
