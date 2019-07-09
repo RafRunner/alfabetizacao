@@ -3,6 +3,7 @@ package controllers
 import dominio.Fundo
 import factories.FundoFactory
 import files.EfeitosSonoros
+import view.JanelaPrincipal
 import view.OptionPane
 import view.Position
 import view.draggable.Event
@@ -26,8 +27,27 @@ class FundoController {
     private FundoFactory fundoFactory
 
     private boolean jaColocouAsFiguras
+    private int indiceAtual
 
-    void configuraListeners(final Fundo fundo) {
+    void executarSequenciaDeConsoantes(final JanelaPrincipal janelaPrincipal, final List<String> consoantes) {
+        indiceAtual = 0
+        executarProximaConsoante(janelaPrincipal, consoantes)
+    }
+
+    private void executarProximaConsoante(final JanelaPrincipal janelaPrincipal, final List<String> consoantes) {
+        if (indiceAtual == consoantes.size()) {
+            indiceAtual = 0
+            janelaPrincipal.voltarParaMenuPrincipal()
+            return
+        }
+
+        final Fundo fundo = fundoFactory.constroiFundo(consoantes.get(indiceAtual))
+        janelaPrincipal.mudarSceneAtual(fundo.scene)
+        configuraListeners(fundo, janelaPrincipal, consoantes)
+        indiceAtual++
+    }
+
+    void configuraListeners(final Fundo fundo, final JanelaPrincipal janelaPrincipal, final List<String> consoantes) {
         final Map<String, Nature> vogalToLocalSilaba = fundo.vogalToLocalSilaba
         final Map<String, Nature> vogalToLocalFigura = fundo.vogalToLocalFigura
 
@@ -54,6 +74,7 @@ class FundoController {
                             return
                         }
                         OptionPane.alerta("Parabéns!", "Você finalizou essa letra!")
+                        executarProximaConsoante(janelaPrincipal, consoantes)
                     })
                     jaColocouAsFiguras = true
                 }).start()

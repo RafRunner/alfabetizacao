@@ -1,24 +1,31 @@
 package view;
 
 import controllers.FundoController;
-import dominio.Fundo;
-import factories.FundoFactory;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import services.FundoService;
+import services.ConsoanteService;
 import utils.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class JanelaPrincipal extends Application {
 
     private Stage stage;
-    private Scene sceneAtual;
+    private Scene menuInicial;
 
     public JanelaPrincipal() {
+        consoanteService = ConsoanteService.getInstancia();
     }
+
+    private ConsoanteService consoanteService;
 
     public static void main(String[] args) {
         launch(args);
@@ -43,26 +50,55 @@ public class JanelaPrincipal extends Application {
         });
 
         VBox vBox = new VBox();
+        vBox.setPadding(new Insets(30, 30, 30, 30));
+        vBox.setSpacing(50);
+
+        Label explicacao = new Label("Por favor, entre com as consoantes que serão apresentadas separadas por vígura: ");
+        explicacao.setWrapText(true);
+
+        TextField consoantes = new TextField();
+        consoantes.setPromptText("Consoantes a serem aprendidas:");
+
         Button start = new Button("Começar!");
         start.setOnAction(event -> {
-            Fundo fundo = FundoFactory.getInstancia().constroiFundo("D");
-            mudarSceneAtual(fundo.getScene());
-            FundoController.getInstancia().configuraListeners(fundo);
+            final List<String> consoantesSelecionadas = parseConsoantes(consoantes.getText());
+            if (consoantesSelecionadas == null || !consoanteService.saoConsoantes(consoantesSelecionadas)) {
+                OptionPane.alerta("Erro!", "Valor inválido! Por favor entre com as consoantes separadas por vígulas");
+            } else {
+                FundoController.getInstancia().executarSequenciaDeConsoantes(this, parseConsoantes(consoantes.getText()));
+            }
         });
 
         vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().addAll(start);
+        vBox.getChildren().addAll(explicacao, consoantes, start);
 
-        sceneAtual = new Scene(vBox, 300, 300);
+        Scene primeiraScene = new Scene(vBox, 500, 500);
+        menuInicial = primeiraScene;
 
-        stage.setScene(sceneAtual);
-        stage.setTitle("Título");
+        stage.setScene(primeiraScene);
+        stage.setTitle("Alfabetização");
         stage.show();
     }
 
-    public void mudarSceneAtual(Scene scene) {
+    private List<String> parseConsoantes(String texto) {
+        texto = texto.toUpperCase();
+        texto = StringUtils.regexReplace(texto, "[^A-Z,]", "");
+        List<String> consoantes;
+        try {
+            consoantes =  Arrays.asList(texto.split(","));
+        } catch (Exception ignored) {
+            return null;
+        }
+        return consoantes;
+    }
+
+    public void mudarSceneAtual(final Scene scene) {
         stage.setScene(scene);
-        sceneAtual = scene;
+        stage.centerOnScreen();
+    }
+
+    public void voltarParaMenuPrincipal() {
+        mudarSceneAtual(menuInicial);
     }
 
     private void fecharPrograma() {

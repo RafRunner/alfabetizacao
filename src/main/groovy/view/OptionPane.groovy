@@ -24,6 +24,7 @@ class OptionPane {
     private static void showAndWait(Stage stage, String mensagem, List componentes) {
         Label label = new Label()
         label.setText(mensagem)
+        label.setWrapText(true)
 
         HBox botoes = new HBox(50)
         botoes.setPadding(new Insets(10, 10, 10, 10))
