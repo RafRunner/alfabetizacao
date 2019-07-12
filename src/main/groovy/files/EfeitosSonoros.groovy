@@ -17,7 +17,7 @@ enum EfeitosSonoros {
     private String pastaAudio = 'audio'
 
     EfeitosSonoros(String soundFileName) {
-        InputStream audio = new FileInputStream(new File(ambiente.getFullPath(pastaAudio, soundFileName)))
+        InputStream audio = ambiente.getResourceInputStream(pastaAudio, soundFileName)
         clip = AudioSystem.getClip()
         BufferedInputStream bufferStream = new BufferedInputStream(audio)
         clip.open(AudioSystem.getAudioInputStream(bufferStream))

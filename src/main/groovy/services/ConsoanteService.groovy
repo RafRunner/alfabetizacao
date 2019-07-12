@@ -1,5 +1,6 @@
 package services
 
+import enuns.Consoantes
 import files.Ambiente
 
 class ConsoanteService {
@@ -22,7 +23,7 @@ class ConsoanteService {
     private static final String nomePastaConsoantes = 'consoantes'
 
     List<String> getAll() {
-        return ambiente.getFiles(nomePastaConsoantes).collect { it.name.replaceAll(/\.png/, '') }
+        return Consoantes.valores()
     }
 
     boolean ehConsoante(final String texto) {

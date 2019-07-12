@@ -36,6 +36,6 @@ class FundoService {
             nomeFundo = nomeFundoPadrao
         }
 
-        return new MyImage(nomePastaFundos, nomeFundo, true)
+        return new MyImage(nomePastaFundos, nomeFundo)
     }
 }

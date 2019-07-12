@@ -53,7 +53,7 @@ public class JanelaPrincipal extends Application {
         vBox.setPadding(new Insets(30, 30, 30, 30));
         vBox.setSpacing(50);
 
-        Label explicacao = new Label("Por favor, entre com as consoantes que serão apresentadas separadas por vígura: ");
+        Label explicacao = new Label("Por favor, entre com as consoantes que serão apresentadas separadas por vírgula: ");
         explicacao.setWrapText(true);
 
         TextField consoantes = new TextField();

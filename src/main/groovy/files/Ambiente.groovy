@@ -1,15 +1,11 @@
 package files
 
-
 import groovy.transform.CompileStatic
-import view.OptionPane
 
 @CompileStatic
 class Ambiente {
 
     static Ambiente instancia = new Ambiente()
-
-    private boolean producao
 
     private String rootDirectory
     private String sistemaOperacional
@@ -22,61 +18,35 @@ class Ambiente {
         File location = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())
 
         boolean producao = location.getPath().contains('.jar')
-        this.producao = producao
         if (producao) {
-            rootDirectory = ''
-//            OptionPane.alerta("caminho produção", rootDirectory)
+            rootDirectory = location.getParent()
         } else {
             rootDirectory = System.getProperty('user.dir')
             rootDirectory += separadorEndereco + 'src' + separadorEndereco + 'main' + separadorEndereco + 'resources'
-//            OptionPane.alerta("caminho dev", rootDirectory)
         }
+    }
+
+    InputStream getResourceInputStream(final String nomePasta, final String nomeArquivo) {
+        return getClass().getResourceAsStream('/' + nomePasta + '/' + nomeArquivo)
+    }
+
+    URL getResourceURL(final String nomePasta, final String nomeArquivo) {
+        return getClass().getResource('/' + nomePasta + '/' + nomeArquivo)
     }
 
     String getFullPath(String nomePasta, String nomeArquivo = null) {
-        String fullPath
-
-        fullPath = rootDirectory + separadorEndereco + nomePasta
-        if (nomeArquivo) {
-            fullPath += separadorEndereco + nomeArquivo
-        }
-//        OptionPane.alerta("caminho completo", fullPath)
-        return fullPath
-    }
-
-    File getFile(String nomeArquivo, String nomePasta = null) {
-        String fullPath
-        fullPath = rootDirectory
+        String fullPath = rootDirectory
 
         if (nomePasta) {
             fullPath += separadorEndereco + nomePasta
         }
-        fullPath += separadorEndereco + nomeArquivo
-
-        return getFileDualMode(fullPath)
+        if (nomeArquivo) {
+            fullPath += separadorEndereco + nomeArquivo
+        }
+        return fullPath
     }
 
-    List<File> getFiles(String nomePasta) {
-        if (!producao) {
-            File pasta
-            try {
-                pasta = new File(getFullPath(nomePasta))
-            } catch(Exception ignored) {
-                throw ignored
-            }
-
-//            OptionPane.alerta("arquivos pasta", pasta.listFiles().toString())
-            return (List<File>) pasta.listFiles().findAll { File arquivo -> arquivo.isFile() }
-        } else {
-            return null
-        }
-    }
-
-    private File getFileDualMode(String caminho) {
-        if (producao) {
-            return new File(getClass().getResource(caminho).toExternalForm())
-        } else {
-            return new File(caminho)
-        }
+    File getFile(String nomeArquivo, String nomePasta = null) {
+        return new File(getFullPath(nomePasta, nomeArquivo))
     }
 }

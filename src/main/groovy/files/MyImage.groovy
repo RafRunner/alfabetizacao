@@ -13,27 +13,21 @@ class MyImage {
 
     String titulo
     Image image
-    String caminhoImagem
+    String url
 
-    MyImage(final String pastaImagem, final String titulo, final Boolean ehFundo) {
-        String caminho = ambiente.getFullPath(pastaImagem, titulo + EXTENSAO_PADRAO)
-
+    MyImage(final String pastaImagem, final String titulo) {
         try {
-            this.caminhoImagem = new File(caminho).toURI().toURL().toString()
-            this.image = new Image(caminhoImagem, ehFundo)
+            this.url = ambiente.getResourceURL(pastaImagem, titulo + EXTENSAO_PADRAO).toString()
+            this.image = new Image(url)
             this.titulo = titulo
 
         } catch (Exception ignored) {
-            throw new EntradaInvalidaException('Arquivo de imagem não existe, não pôde ser lido ou não é uma imagem: ' + caminho + '!')
+            throw new EntradaInvalidaException("Arquivo de imagem não existe, não pôde ser lido ou não é uma imagem (Pasta: $pastaImagem título: $titulo)!")
         }
     }
 
-    MyImage(final String pastaImagem, final String titulo) {
-        this(pastaImagem, titulo, false)
-    }
-
     void resize(final double width, final double height, final boolean preserveRatio = false) {
-        final Image imagemResized = new Image(caminhoImagem, width, height, preserveRatio, true)
+        final Image imagemResized = new Image(url, width, height, preserveRatio, true)
         this.image = imagemResized
     }
 }
