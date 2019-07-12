@@ -120,7 +120,7 @@ class FundoController {
         final Map<String, Nature> areasTocadas = regioes.findAll { it.value.isTouching(objetoMovido) }
         if (!areasTocadas) {
             objetoMovido.deslocate(posicaoInicial)
-            logger.registraMensagem("Criança arrastou a silaba/figura associada a vogal $vogal para uma possição não associada a qualquer vogal", '\t')
+            logger.registraMensagem("Criança arrastou a silaba/figura associada a vogal $vogal para uma posição não associada a qualquer vogal", '\t')
             EfeitosSonoros.ERRO.play()
             return
         }
@@ -146,7 +146,7 @@ class FundoController {
             objetoMovido.disable()
         } else {
             objetoMovido.deslocate(posicaoInicial)
-            logger.registraMensagem("Criança errou! Arrastou a silaba/figura associada a vogal $vogal para uma possição associada a vogal $vogalAssociada", '\t')
+            logger.registraMensagem("Criança errou! Arrastou a silaba/figura associada a vogal $vogal para uma posição associada a vogal $vogalAssociada", '\t')
             EfeitosSonoros.ERRO.play()
         }
     }
