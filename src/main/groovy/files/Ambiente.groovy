@@ -11,9 +11,12 @@ class Ambiente {
     private String sistemaOperacional
     private String separadorEndereco
 
+    String lineSeparator
+
     private Ambiente() {
         sistemaOperacional = System.getProperty('os.name')
         separadorEndereco = System.getProperty('file.separator')
+        lineSeparator = System.getProperty('line.separator')
 
         File location = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())
 
@@ -22,7 +25,6 @@ class Ambiente {
             rootDirectory = location.getParent()
         } else {
             rootDirectory = System.getProperty('user.dir')
-            rootDirectory += separadorEndereco + 'src' + separadorEndereco + 'main' + separadorEndereco + 'resources'
         }
     }
 

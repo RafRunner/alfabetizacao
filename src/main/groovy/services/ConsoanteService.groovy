@@ -33,4 +33,8 @@ class ConsoanteService {
     boolean saoConsoantes(final List<String> textos) {
         return textos.every { ehConsoante(it) }
     }
+
+    List<String> achaNaoConsoantes(final List<String> textos) {
+        return textos.findAll { !ehConsoante(it) }
+    }
 }

@@ -7,12 +7,13 @@ import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
+import javafx.scene.text.Font
 import javafx.stage.Modality
 import javafx.stage.Stage
 
 class OptionPane {
 
-    private static Stage configuraStage(String titulo) {
+    private static Stage configuraStage(final String titulo) {
         Stage stage = new Stage()
         stage.initModality(Modality.APPLICATION_MODAL)
         stage.setTitle(titulo)
@@ -21,9 +22,10 @@ class OptionPane {
         return stage
     }
 
-    private static void showAndWait(Stage stage, String mensagem, List componentes) {
+    private static void showAndWait(final Stage stage, final String mensagem, final List componentes, final int tamanhoFonte) {
         Label label = new Label()
         label.setText(mensagem)
+        label.setFont(new Font('Arial',tamanhoFonte))
         label.setWrapText(true)
 
         HBox botoes = new HBox(50)
@@ -41,16 +43,16 @@ class OptionPane {
         stage.showAndWait()
     }
 
-    static void alerta(String titulo, String mensagem) {
+    static void alerta(final String titulo, final String mensagem, final int tamanhoFonte = 15) {
         Stage stage = configuraStage(titulo)
 
         Button ok = new Button("Ok")
         ok.setOnAction({ e -> stage.close() })
 
-        showAndWait(stage, mensagem, [ok])
+        showAndWait(stage, mensagem, [ok], tamanhoFonte)
     }
 
-    static boolean confirmacao(String titulo, String mensagem) {
+    static boolean confirmacao(final String titulo, final String mensagem) {
         Stage stage = configuraStage(titulo)
 
         boolean resposta = false
@@ -61,7 +63,7 @@ class OptionPane {
         Button nao = new Button("não")
         nao.setOnAction({ e -> stage.close() })
 
-        showAndWait(stage, mensagem, [sim, nao])
+        showAndWait(stage, mensagem, [sim, nao], 15)
         return resposta
     }
 }

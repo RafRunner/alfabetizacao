@@ -3,6 +3,7 @@ package controllers
 import dominio.Fundo
 import factories.FundoFactory
 import files.EfeitosSonoros
+import files.Logger
 import view.JanelaPrincipal
 import view.OptionPane
 import view.Position
@@ -29,25 +30,31 @@ class FundoController {
     private boolean jaColocouAsFiguras
     private int indiceAtual
 
-    void executarSequenciaDeConsoantes(final JanelaPrincipal janelaPrincipal, final List<String> consoantes) {
+    void executarSequenciaDeConsoantes(final JanelaPrincipal janelaPrincipal, final List<String> consoantes, final Logger logger) {
         indiceAtual = 0
-        executarProximaConsoante(janelaPrincipal, consoantes)
+        logger.registraMensagem("Iniciando apresentação!")
+        executarProximaConsoante(janelaPrincipal, consoantes, logger)
     }
 
-    private void executarProximaConsoante(final JanelaPrincipal janelaPrincipal, final List<String> consoantes) {
+    private void executarProximaConsoante(final JanelaPrincipal janelaPrincipal, final List<String> consoantes, final Logger logger) {
         if (indiceAtual == consoantes.size()) {
             indiceAtual = 0
+            logger.registraMensagem("Finalizadas todas as sílabas e figuras!", "\n\t")
             janelaPrincipal.voltarParaMenuPrincipal()
             return
         }
 
-        final Fundo fundo = fundoFactory.constroiFundo(consoantes.get(indiceAtual))
+        final String consoanteAtual = consoantes.get(indiceAtual)
+        logger.registraMensagem("Consoante de número ${indiceAtual + 1}: $consoanteAtual", "\t")
+        logger.registraMensagem("Iniciando apresentação das sílabas:", "\t")
+
+        final Fundo fundo = fundoFactory.constroiFundo(consoanteAtual)
         janelaPrincipal.mudarSceneAtual(fundo.scene)
-        configuraListeners(fundo, janelaPrincipal, consoantes)
+        configuraListeners(fundo, janelaPrincipal, consoantes, logger)
         indiceAtual++
     }
 
-    void configuraListeners(final Fundo fundo, final JanelaPrincipal janelaPrincipal, final List<String> consoantes) {
+    void configuraListeners(final Fundo fundo, final JanelaPrincipal janelaPrincipal, final List<String> consoantes, final Logger logger) {
         final Map<String, Nature> vogalToLocalSilaba = fundo.vogalToLocalSilaba
         final Map<String, Nature> vogalToLocalFigura = fundo.vogalToLocalFigura
 
@@ -61,20 +68,22 @@ class FundoController {
             it.value.setStartingPosition(fundo.anchorPaneDireitoEspacamento.width + it.value.eventRegion.layoutX, it.value.eventRegion.layoutY)
         }
 
-        configuraListener(fundo, vogalToLocalSilaba, fundo.vogalToSilaba, {
+        configuraListener(fundo, vogalToLocalSilaba, fundo.vogalToSilaba, logger, {
             if (fundo.vogalToSilaba.any { it.value.isEnabled() }) {
                 return
             }
             if (!jaColocouAsFiguras) {
+                logger.registraMensagem("A criança terminou todas as sílabas! Passando para as figuras", '\t')
                 fundoFactory.colocaSilabasOuFigurasNaTela(fundo.painelFiguras, fundo.vogalToFigura)
                 new Thread( {
                     sleep(100)
-                    configuraListener(fundo, fundo.vogalToLocalFigura, fundo.vogalToFigura, {
+                    configuraListener(fundo, fundo.vogalToLocalFigura, fundo.vogalToFigura, logger, {
                         if (fundo.vogalToFigura.any { it.value.isEnabled() }) {
                             return
                         }
-                        OptionPane.alerta("Parabéns!", "Você finalizou essa letra!")
-                        executarProximaConsoante(janelaPrincipal, consoantes)
+                        logger.registraMensagem("A criança terminou todas as figuras! Passando para a próxima consoante.\n", '\t')
+                        OptionPane.alerta("Parabéns!", "Você finalizou essa letra!", 25)
+                        executarProximaConsoante(janelaPrincipal, consoantes, logger)
                     })
                     jaColocouAsFiguras = true
                 }).start()
@@ -82,7 +91,7 @@ class FundoController {
         })
     }
 
-    private void configuraListener(final Fundo fundo, final Map<String, Nature> vogalToLocalSilabaOuFigura, final Map<String, Nature> vogalToSilabaOuFigura, final Closure acaoAoFinalizar) {
+    private void configuraListener(final Fundo fundo, final Map<String, Nature> vogalToLocalSilabaOuFigura, final Map<String, Nature> vogalToSilabaOuFigura, final Logger logger, final Closure acaoAoFinalizar) {
         vogalToSilabaOuFigura.each { Map.Entry<String, Nature> vt ->
             final String vogal = vt.key
             final Nature silabaOuFigura = vt.value
@@ -91,7 +100,7 @@ class FundoController {
             final Position posicaoInicial = silabaOuFigura.getPosition()
 
             silabaOuFigura.addListener({ draggableNature, dragEvent ->
-                handle(vogal, silabaOuFigura, vogalToLocalSilabaOuFigura, posicaoInicial, dragEvent)
+                handle(vogal, silabaOuFigura, vogalToLocalSilabaOuFigura, posicaoInicial, dragEvent, logger)
                 acaoAoFinalizar()
             })
         }
@@ -101,7 +110,8 @@ class FundoController {
                         final Nature objetoMovido,
                         final Map<String, Nature> regioes,
                         final Position posicaoInicial,
-                        final Event dragEvent) {
+                        final Event dragEvent,
+                        final Logger logger) {
 
         if (dragEvent != Event.DragEnd) {
             return
@@ -110,6 +120,7 @@ class FundoController {
         final Map<String, Nature> areasTocadas = regioes.findAll { it.value.isTouching(objetoMovido) }
         if (!areasTocadas) {
             objetoMovido.deslocate(posicaoInicial)
+            logger.registraMensagem("Criança arrastou a silaba/figura associada a vogal $vogal para uma possição não associada a qualquer vogal", '\t')
             EfeitosSonoros.ERRO.play()
             return
         }
@@ -130,10 +141,12 @@ class FundoController {
 
         if (vogalAssociada == vogal) {
             objetoMovido.fit(areaTocadaMaisProxima)
+            logger.registraMensagem("Criança acertou! Arrastou a silaba/figura associada a vogal $vogal para sua posição correta", '\t')
             EfeitosSonoros.ACERTO.play()
             objetoMovido.disable()
         } else {
             objetoMovido.deslocate(posicaoInicial)
+            logger.registraMensagem("Criança errou! Arrastou a silaba/figura associada a vogal $vogal para uma possição associada a vogal $vogalAssociada", '\t')
             EfeitosSonoros.ERRO.play()
         }
     }

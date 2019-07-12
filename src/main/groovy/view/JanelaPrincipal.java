@@ -1,6 +1,7 @@
 package view;
 
 import controllers.FundoController;
+import files.Logger;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -59,18 +60,35 @@ public class JanelaPrincipal extends Application {
         TextField consoantes = new TextField();
         consoantes.setPromptText("Consoantes a serem aprendidas:");
 
+        Label lblNomeCrianca = new Label("Nome da Criança: ");
+        explicacao.setWrapText(true);
+
+        TextField txtNomeCrianca = new TextField();
+        consoantes.setPromptText("Nome da Criança:");
+
         Button start = new Button("Começar!");
         start.setOnAction(event -> {
             final List<String> consoantesSelecionadas = parseConsoantes(consoantes.getText());
-            if (consoantesSelecionadas == null || !consoanteService.saoConsoantes(consoantesSelecionadas)) {
-                OptionPane.alerta("Erro!", "Valor inválido! Por favor entre com as consoantes separadas por vígulas");
+            final String nomeCrianca = txtNomeCrianca.getText();
+
+            if (nomeCrianca == null) {
+                OptionPane.alerta("Erro!", "Por favor, entre com um nome para a criança!");
+            } else if (consoantesSelecionadas == null) {
+                OptionPane.alerta("Erro!", "Por favor, entre com as consoantes separadas por vírgulas");
+            } else if (!consoanteService.saoConsoantes(consoantesSelecionadas)){
+                final List<String> naoConsoantes = consoanteService.achaNaoConsoantes(consoantesSelecionadas);
+                OptionPane.alerta("Erro!", naoConsoantes + ": Não são consoantes ou não estão disponíveis!");
+
             } else {
-                FundoController.getInstancia().executarSequenciaDeConsoantes(this, parseConsoantes(consoantes.getText()));
+                final List<String> listConsoantes = parseConsoantes(consoantes.getText());
+                final Logger logger = new Logger(nomeCrianca, listConsoantes);
+
+                FundoController.getInstancia().executarSequenciaDeConsoantes(this, listConsoantes, logger);
             }
         });
 
         vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().addAll(explicacao, consoantes, start);
+        vBox.getChildren().addAll(lblNomeCrianca, txtNomeCrianca, explicacao, consoantes, start);
 
         Scene primeiraScene = new Scene(vBox, 500, 500);
         menuInicial = primeiraScene;
@@ -81,10 +99,10 @@ public class JanelaPrincipal extends Application {
     }
 
     private List<String> parseConsoantes(String texto) {
-        texto = texto.toUpperCase();
-        texto = StringUtils.regexReplace(texto, "[^A-Z,]", "");
         List<String> consoantes;
         try {
+            texto = texto.toUpperCase();
+            texto = StringUtils.regexReplace(texto, "[^A-Z,]", "");
             consoantes =  Arrays.asList(texto.split(","));
         } catch (Exception ignored) {
             return null;
