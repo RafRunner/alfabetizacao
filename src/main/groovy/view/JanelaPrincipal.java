@@ -71,9 +71,9 @@ public class JanelaPrincipal extends Application {
             final List<String> consoantesSelecionadas = parseConsoantes(consoantes.getText());
             final String nomeCrianca = txtNomeCrianca.getText();
 
-            if (nomeCrianca == null) {
+            if (nomeCrianca.equals("")) {
                 OptionPane.alerta("Erro!", "Por favor, entre com um nome para a criança!");
-            } else if (consoantesSelecionadas == null) {
+            } else if (consoantes.getText().equals("")) {
                 OptionPane.alerta("Erro!", "Por favor, entre com as consoantes separadas por vírgulas");
             } else if (!consoanteService.saoConsoantes(consoantesSelecionadas)){
                 final List<String> naoConsoantes = consoanteService.achaNaoConsoantes(consoantesSelecionadas);
