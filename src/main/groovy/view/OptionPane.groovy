@@ -18,6 +18,7 @@ class OptionPane {
         stage.initModality(Modality.APPLICATION_MODAL)
         stage.setTitle(titulo)
         stage.setMinWidth(250)
+        stage.setMaxWidth(500)
 
         return stage
     }
@@ -27,6 +28,10 @@ class OptionPane {
         label.setText(mensagem)
         label.setFont(new Font('Arial',tamanhoFonte))
         label.setWrapText(true)
+
+        if (mensagem.toCharArray().size() > 300) {
+            stage.setMinHeight(mensagem.toCharArray().size() * 0.6)
+        }
 
         HBox botoes = new HBox(50)
         botoes.setPadding(new Insets(10, 10, 10, 10))

@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -64,7 +65,9 @@ public class JanelaPrincipal extends Application {
         explicacao.setWrapText(true);
 
         TextField txtNomeCrianca = new TextField();
-        consoantes.setPromptText("Nome da Criança:");
+        txtNomeCrianca.setPromptText("Nome da Criança:");
+
+        CheckBox mostrarParabenizacao = new CheckBox("Mostrar Parabenização");
 
         Button start = new Button("Começar!");
         start.setOnAction(event -> {
@@ -83,14 +86,25 @@ public class JanelaPrincipal extends Application {
                 final List<String> listConsoantes = parseConsoantes(consoantes.getText());
                 final Logger logger = new Logger(nomeCrianca, listConsoantes);
 
-                FundoController.getInstancia().executarSequenciaDeConsoantes(this, listConsoantes, logger);
+                FundoController.getInstancia().executarSequenciaDeConsoantes(this, listConsoantes, mostrarParabenizacao.isSelected(), logger);
             }
         });
+        start.setMinWidth(100);
+
+        Button ajuda = new Button("Ajuda");
+        ajuda.setOnAction(event -> OptionPane.alerta("Ajuda", "Para iniciar, basta que se coloque o nome da criança que está participando no campo 'Nome da Criança'" +
+                " e uma sequência de consoantes separadas por vírgula no campo 'Consoantes a serem aprendidas'. Após isso, ao clicar no botão 'Começar' serão apresentadas uma série" +
+                " de telas à criança, cada tela correspondente a uma consoante informada, na ordem em que foram informadas.\n\nA criança terá como feedback efeitos sonoros e, após concluir" +
+                " uma tela caso a caixa Mostrar Parabenização tenha sido marcada será mostrada uma mensagem de parabéns, onde será necessário clicar no ok para passar para a próxima consoante. Caso fosse a última consoante, o programa simplesmente" +
+                " volta para a tela inicial. A última mensagem de parabéns é sempre mostrada.\n\nNote que na pasta onde se encontra o programa será criada (se ainda não existir) uma pasta chamada 'Resultados' onde se encontrarão" +
+                " arquivos txt com anotações sobre o desempenho de cada criança. Esses arquivos tem o formato: NomeDaCrianca-ConsoantesTreinadas-HoraInicio.txt" +
+                "\n\nVersão atual: 1.1.0\nProgramado por: Rafael Nunes Santana"));
+        ajuda.setMinWidth(100);
 
         vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().addAll(lblNomeCrianca, txtNomeCrianca, explicacao, consoantes, start);
+        vBox.getChildren().addAll(lblNomeCrianca, txtNomeCrianca, explicacao, consoantes, mostrarParabenizacao, start, ajuda);
 
-        Scene primeiraScene = new Scene(vBox, 500, 500);
+        Scene primeiraScene = new Scene(vBox, 620, 500);
         menuInicial = primeiraScene;
 
         stage.setScene(primeiraScene);

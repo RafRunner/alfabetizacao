@@ -1,14 +1,12 @@
 package services
 
 import enuns.Consoantes
-import files.Ambiente
 
 class ConsoanteService {
 
     static ConsoanteService instancia
 
     private ConsoanteService() {
-        ambiente = Ambiente.instancia
     }
 
     static ConsoanteService getInstancia() {
@@ -17,10 +15,6 @@ class ConsoanteService {
         }
         return instancia
     }
-
-    Ambiente ambiente
-
-    private static final String nomePastaConsoantes = 'consoantes'
 
     List<String> getAll() {
         return Consoantes.valores()

@@ -27,11 +27,12 @@ class FundoController {
 
     private FundoFactory fundoFactory
 
-    private boolean jaColocouAsFiguras
     private int indiceAtual
+    private Boolean mostrarParabenizacao
 
-    void executarSequenciaDeConsoantes(final JanelaPrincipal janelaPrincipal, final List<String> consoantes, final Logger logger) {
+    void executarSequenciaDeConsoantes(final JanelaPrincipal janelaPrincipal, final List<String> consoantes, final Boolean mostrarParabenizacao, final Logger logger) {
         indiceAtual = 0
+        this.mostrarParabenizacao = mostrarParabenizacao
         logger.registraMensagem("Iniciando apresentação!")
         executarProximaConsoante(janelaPrincipal, consoantes, logger)
     }
@@ -41,6 +42,7 @@ class FundoController {
             indiceAtual = 0
             logger.registraMensagem("Finalizadas todas as sílabas e figuras!", "\n\t")
             janelaPrincipal.voltarParaMenuPrincipal()
+            OptionPane.alerta("Parabens!", "Você acabou tudas as letras! Parabéns!")
             return
         }
 
@@ -58,7 +60,7 @@ class FundoController {
         final Map<String, Nature> vogalToLocalSilaba = fundo.vogalToLocalSilaba
         final Map<String, Nature> vogalToLocalFigura = fundo.vogalToLocalFigura
 
-        jaColocouAsFiguras = false
+        boolean jaColocouAsFiguras = false
 
         vogalToLocalSilaba.each {
             it.value.setStartingPosition(fundo.anchorPaneDireitoEspacamento.width + it.value.eventRegion.layoutX, it.value.eventRegion.layoutY)
@@ -82,7 +84,9 @@ class FundoController {
                             return
                         }
                         logger.registraMensagem("A criança terminou todas as figuras! Passando para a próxima consoante.\n", '\t')
-                        OptionPane.alerta("Parabéns!", "Você finalizou essa letra!", 25)
+                        if (mostrarParabenizacao) {
+                            OptionPane.alerta("Parabéns!", "Você finalizou essa letra!", 25)
+                        }
                         executarProximaConsoante(janelaPrincipal, consoantes, logger)
                     })
                     jaColocouAsFiguras = true
