@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import services.ConsoanteService;
 import utils.StringUtils;
 
+import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class JanelaPrincipal extends Application {
                 " uma tela caso a caixa Mostrar Parabenização tenha sido marcada será mostrada uma mensagem de parabéns, onde será necessário clicar no ok para passar para a próxima consoante. Caso fosse a última consoante, o programa simplesmente" +
                 " volta para a tela inicial. A última mensagem de parabéns é sempre mostrada.\n\nNote que na pasta onde se encontra o programa será criada (se ainda não existir) uma pasta chamada 'Resultados' onde se encontrarão" +
                 " arquivos txt com anotações sobre o desempenho de cada criança. Esses arquivos tem o formato: NomeDaCrianca-ConsoantesTreinadas-HoraInicio.txt" +
-                "\n\nVersão atual: 1.1.0\nProgramado por: Rafael Nunes Santana"));
+                "\n\nVersão atual: 1.1.0\nProgramado por: Rafael Nunes Santana", 15, new Dimension(600, 550)));
         ajuda.setMinWidth(100);
 
         vBox.setAlignment(Pos.CENTER);

@@ -11,14 +11,20 @@ import javafx.scene.text.Font
 import javafx.stage.Modality
 import javafx.stage.Stage
 
+import java.awt.Dimension
+
 class OptionPane {
 
-    private static Stage configuraStage(final String titulo) {
+    private static Stage configuraStage(final String titulo, final Dimension tamanho) {
         Stage stage = new Stage()
         stage.initModality(Modality.APPLICATION_MODAL)
         stage.setTitle(titulo)
-        stage.setMinWidth(250)
-        stage.setMaxWidth(500)
+        if (tamanho) {
+            stage.setMinHeight(tamanho.height)
+            stage.setMaxWidth(tamanho.width)
+        } else {
+            stage.setMinWidth(250)
+        }
 
         return stage
     }
@@ -28,10 +34,6 @@ class OptionPane {
         label.setText(mensagem)
         label.setFont(new Font('Arial',tamanhoFonte))
         label.setWrapText(true)
-
-        if (mensagem.toCharArray().size() > 300) {
-            stage.setMinHeight(mensagem.toCharArray().size() * 0.6)
-        }
 
         HBox botoes = new HBox(50)
         botoes.setPadding(new Insets(10, 10, 10, 10))
@@ -48,17 +50,18 @@ class OptionPane {
         stage.showAndWait()
     }
 
-    static void alerta(final String titulo, final String mensagem, final int tamanhoFonte = 15) {
-        Stage stage = configuraStage(titulo)
+    static void alerta(final String titulo, final String mensagem, final int tamanhoFonte = 15, final Dimension tamanho = null) {
+        Stage stage = configuraStage(titulo, tamanho)
 
         Button ok = new Button("Ok")
         ok.setOnAction({ e -> stage.close() })
 
         showAndWait(stage, mensagem, [ok], tamanhoFonte)
+        stage.centerOnScreen()
     }
 
-    static boolean confirmacao(final String titulo, final String mensagem) {
-        Stage stage = configuraStage(titulo)
+    static boolean confirmacao(final String titulo, final String mensagem, final Dimension tamanho = null) {
+        Stage stage = configuraStage(titulo, tamanho)
 
         boolean resposta = false
 
