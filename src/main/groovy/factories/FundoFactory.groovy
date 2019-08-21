@@ -49,8 +49,8 @@ class FundoFactory {
     }
 
     private static final Dimension screenSize = Toolkit.defaultToolkit.screenSize
-    private static final Dimension tamanhoTela = new Dimension(screenSize.width - 200 as Integer, screenSize.height as Integer)
-    private static final Double alturaGavetaFiguras = 200
+    private static final Dimension tamanhoTela = new Dimension(screenSize.width - (0.10417 * screenSize.width) as Integer, screenSize.height as Integer)
+    private static final Double alturaGavetaFiguras = 0.10417 * screenSize.width
 
     private SilabaService silabaService
     private BocaService bocaService
@@ -113,21 +113,21 @@ class FundoFactory {
         if (!fundo.ehCasoEspecial) {
             final ImageView figuraBoca = new ImageView(bocaService.getBocaPorConsoante(consoante).image)
             final Label labelConsoante = new Label(consoante)
-            labelConsoante.font = new Font('Arial',100)
+            labelConsoante.font = new Font('Arial', 0.09259 * screenSize.height)
 
-            AnchorPane.setTopAnchor(figuraBoca, 245)
-            AnchorPane.setLeftAnchor(figuraBoca, 290)
-            AnchorPane.setTopAnchor(labelConsoante, 370)
-            AnchorPane.setLeftAnchor(labelConsoante, 340)
+            AnchorPane.setTopAnchor(figuraBoca, 0.226851 * screenSize.height)
+            AnchorPane.setLeftAnchor(figuraBoca, 0.15104 * screenSize.width)
+            AnchorPane.setTopAnchor(labelConsoante, 0.342592 * screenSize.height)
+            AnchorPane.setLeftAnchor(labelConsoante, 0.177083 * screenSize.width)
             anchorPaneDireito.children.addAll(figuraBoca, labelConsoante)
         }
 
         for (int i = 0; i < silabaService.getNumeroSilabasAssociadasAConsoante(consoante); i++) {
             final Pane paneLugarSilaba = new Pane()
-            paneLugarSilaba.setMinSize(100, 100)
+            paneLugarSilaba.setMinSize(0.052083 * screenSize.width, 0.092592 * screenSize.height)
 
             final Pane paneLugarFigura = new Pane()
-            paneLugarFigura.setMinSize(100, 100)
+            paneLugarFigura.setMinSize(0.052083 * screenSize.width, 0.092592 * screenSize.height)
 
             final Nature natureSilaba = new Nature(paneLugarSilaba)
             natureSilaba.disable()
@@ -139,10 +139,10 @@ class FundoFactory {
             fundo.vogalToLocalSilaba.put(vogalIndice, natureSilaba)
             fundo.vogalToLocalFigura.put(vogalIndice, natureFigura)
 
-            AnchorPane.setTopAnchor(paneLugarSilaba, 90 + 147 * i)
-            AnchorPane.setLeftAnchor(paneLugarSilaba, 200)
-            AnchorPane.setTopAnchor(paneLugarFigura, 90 + 147 * i)
-            AnchorPane.setLeftAnchor(paneLugarFigura, 500)
+            AnchorPane.setTopAnchor(paneLugarSilaba, (0.083333 * screenSize.height) + (0.136111 * screenSize.height * i))
+            AnchorPane.setLeftAnchor(paneLugarSilaba, 0.104166 * screenSize.width)
+            AnchorPane.setTopAnchor(paneLugarFigura, (0.083333 * screenSize.height) + (0.136111 * screenSize.height * i))
+            AnchorPane.setLeftAnchor(paneLugarFigura, 0.260416 * screenSize.width)
             anchorPaneEsquerdo.children.addAll(paneLugarSilaba, paneLugarFigura)
         }
 
@@ -155,11 +155,11 @@ class FundoFactory {
 
         silabaService.getSilabasAssociadasAConsoante(consoante).each {
             final Pane paneSilaba = new Pane()
-            paneSilaba.setMinSize(170, 110)
+            paneSilaba.setMinSize(0.088541 * screenSize.width, 0.092592 * screenSize.height)
 
             Label label = new Label(it)
-            int size = consoante.length() > 1 ? 70 : 100
-            label.font = new Font('Arial',size)
+            double size = consoante.length() > 1 ? 0.06481 * screenSize.height : 0.092592 * screenSize.height
+            label.font = new Font('Arial', size)
 
             paneSilaba.children.add(label)
             final Nature natureSilaba = new Nature(paneSilaba)
@@ -171,7 +171,7 @@ class FundoFactory {
 
         figuraService.getFigurasPorConsoante(consoante).each {
             final Pane paneFigura = new Pane()
-            paneFigura.setMinSize(170, 110)
+            paneFigura.setMinSize(0.088541 * screenSize.width, 0.101851 * screenSize.height)
 
             final ImageView figura = new ImageView(it.image)
 
